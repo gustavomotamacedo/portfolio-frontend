@@ -1,26 +1,1061 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light Theme Defaults */
+  --bg-color: #f8f5f2; /* Off-white quente */
+  --surface-color: #ffffff;
+  --text-primary: #2d2424; /* Marrom muito escuro */
+  --text-secondary: #5c5552;
+  --accent-primary: #e07a5f; /* Terracota */
+  --accent-secondary: #f2cc8f; /* Amarelo Mostarda */
+  --accent-hover: #d0694d;
+  --border-color: #e6e1dc;
+  --message-user-bg: #e07a5f;
+  --message-user-text: #ffffff;
+  --message-ai-bg: #ffffff;
+  --message-ai-text: #2d2424;
+  --input-bg: #ffffff;
+  --shadow-color: rgba(45, 36, 36, 0.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-theme="dark"] {
+  --bg-color: #121212; /* Preto puro para fundo principal */
+  --surface-color: #1e1e1e; /* Cinza escuro para cards/superfícies */
+  --text-primary: #e0e0e0; /* Cinza claro para texto principal */
+  --text-secondary: #a0a0a0; /* Cinza médio para texto secundário */
+  --accent-primary: #e07a5f; /* Terracota vibrante */
+  --accent-secondary: #f2cc8f; /* Amarelo destaque */
+  --accent-hover: #f4d09c;
+  --border-color: #333333;
+  --message-user-bg: #c95d43; /* Terracota mais escuro para contraste > 4.5:1 com branco */
+  --message-user-text: #ffffff;
+  --message-ai-bg: #e5e5e5; /* Cinza claro suave para reduzir brilho no modo noturno */
+  --message-ai-text: #1a1a1a;
+  --input-bg: #2c2c2c;
+  --shadow-color: rgba(0, 0, 0, 0.4);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: fixed; /* Evita bounce no iOS */
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Header */
+header {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  z-index: 10;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Header Actions Container */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Theme Switch */
+.theme-switch {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+.theme-switch:hover {
+  background: var(--bg-color);
+  border-color: var(--accent-secondary);
+}
+
+.theme-icon {
+  position: absolute;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  opacity: 0;
+  transform: rotate(90deg) scale(0);
+}
+
+.theme-icon.active {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.header-icon-btn {
+  width: 36px;
+  height: 36px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+/* Language Switch */
+.language-switch {
+  display: flex;
+  align-items: center;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+.language-switch:hover {
+  border-color: var(--accent-secondary);
+}
+
+.language-option-container {
+  display: flex;
+  gap: 2px;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  opacity: 0.5;
+}
+
+.language-option.active {
+  background: var(--accent-primary);
+  opacity: 1;
+  color: white;
+}
+
+.language-flag {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.language-code {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.language-option.active .language-code {
+  color: white;
+}
+
+/* WhatsApp CTA Primário (Header) */
+.whatsapp-cta-primary {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background: var(--accent-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(224, 122, 95, 0.3);
+  white-space: nowrap;
+}
+
+.whatsapp-cta-primary:hover {
+  transform: translateY(-2px);
+  background: var(--accent-hover);
+  box-shadow: 0 6px 20px rgba(224, 122, 95, 0.4);
+}
+
+.whatsapp-icon {
+  margin-right: 8px;
+  display: block; /* Garante alinhamento correto */
+  flex-shrink: 0; /* Impede que o ícone amasse */
+}
+
+@media (max-width: 768px) {
+  .whatsapp-text {
+    display: none;
+  }
+
+  .whatsapp-icon {
+    margin-right: 0;
+    width: 22px; /* Levemente maior no mobile */
+    height: 22px;
+  }
+
+  .whatsapp-cta-primary {
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    min-width: 40px; /* Garante que não encolha */
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* Contact Info Dropdown */
+.contact-dropdown-container {
+  position: relative;
+  z-index: 1000;
+}
+
+.contact-dropdown-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 280px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px var(--shadow-color);
+  padding: 12px;
+  animation: slideInDown 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.contact-dropdown-header {
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 4px;
+}
+
+.contact-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  text-decoration: none;
+  border-radius: 8px;
+  background: var(--bg-color);
+  transition: all 0.2s;
+  color: var(--text-primary);
+}
+
+.contact-dropdown-item:hover {
+  background: var(--surface-color);
+  transform: translateX(4px);
+  border: 1px solid var(--accent-secondary);
+}
+
+.contact-icon-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.contact-dropdown-item:hover .contact-icon-small {
+  color: var(--accent-primary);
+}
+
+.contact-label-small {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Cores específicas para ícones no dropdown */
+.contact-dropdown-item:nth-child(1) .contact-icon-small {
+  color: #ea4335;
+} /* Email/Gmail */
+.contact-dropdown-item:nth-child(2) .contact-icon-small {
+  color: #0077b5;
+} /* LinkedIn */
+.contact-dropdown-item:nth-child(3) .contact-icon-small {
+  color: var(--text-primary);
+} /* GitHub */
+
+/* Legacy Contact Styles (to be removed) */
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  background: var(--bg-color);
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  min-width: 140px;
+}
+
+.contact-link:hover {
+  background: var(--surface-color);
+  border-color: var(--accent-secondary);
+  transform: translateY(-2px);
+}
+
+.contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--surface-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.contact-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.contact-value {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Chat Window */
+.main-container {
+  flex: 1;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+#chat-window {
+  flex: 1;
+  padding: 20px;
+  padding-bottom: 100px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overscroll-behavior-y: contain; /* Impede scroll chaining */
+  -webkit-overflow-scrolling: touch; /* Suavidade no iOS */
+}
+
+/* Bubble Styles */
+.bubble {
+  max-width: 80%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  position: relative;
+  box-shadow: 0 1px 2px var(--shadow-color);
+}
+
+.message-row.ai .bubble {
+  background: var(--message-ai-bg);
+  color: var(--message-ai-text);
+  border-top-left-radius: 4px;
+}
+
+.message-row.user .bubble {
+  background: var(--message-user-bg);
+  color: var(--message-user-text);
+  border-top-right-radius: 4px;
+}
+
+/* Empty State */
+.empty-state h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 32px;
+  max-width: 80%;
+}
+
+.suggestion-pill {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  flex: 1 1 40%;
+  min-width: 140px;
+  max-width: 200px;
+  color: var(--text-primary);
+}
+
+.suggestion-pill:hover {
+  background: var(--bg-color);
+  border-color: var(--accent-secondary);
+  transform: translateY(-2px);
+}
+
+/* Input Area */
+.input-wrapper {
+  background: var(--bg-color);
+  box-shadow: 0 -2px 10px var(--shadow-color);
+}
+
+.input-card {
+  background: var(--input-bg);
+  border-radius: 24px;
+  padding: 6px 6px 6px 16px;
+  box-shadow: 0 10px 30px -5px var(--shadow-color);
+  border: 1px solid var(--border-color);
+}
+
+.chat-textarea {
+  color: var(--text-primary);
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: bg 0.2s;
+}
+
+.icon-btn:hover {
+  background: var(--bg-color);
+  color: var(--text-primary);
+}
+
+#send-btn {
+  background: var(--accent-primary) !important;
+  color: white !important;
+}
+
+#send-btn:hover {
+  background: var(--accent-hover) !important;
+}
+
+.contact-arrow {
+  color: #9ca3af;
+  transition: transform 0.3s ease;
+}
+
+.contact-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.contact-content {
+  max-height: 0;
+  opacity: 0;
+  transition: all 0.3s ease-out;
+  overflow: hidden;
+}
+
+.contact-info.expanded .contact-content {
+  max-height: 500px; /* Altura suficiente para mostrar o conteúdo */
+  opacity: 1;
+  padding-bottom: 16px;
+}
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  background: #f9fafb;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+  min-width: 140px;
+}
+
+.contact-link:hover {
+  background: white;
+  border-color: #d1d5db;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: white;
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.contact-link:nth-child(1) .contact-icon {
+  color: #ea4335;
+} /* Email/Gmail color */
+.contact-link:nth-child(2) .contact-icon {
+  color: #0077b5;
+} /* LinkedIn color */
+.contact-link:nth-child(3) .contact-icon {
+  color: #333;
+} /* GitHub color */
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-label {
+  font-size: 0.7rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.contact-value {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Chat Window */
+.main-container {
+  flex: 1;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden; /* Importante para prevenir scroll duplo */
+  min-height: 0; /* Permite que flex funcione corretamente */
+}
+
+#chat-window {
+  flex: 1;
+  padding: 20px;
+  padding-bottom: 100px; /* Espaço extra para evitar sobreposição com input */
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scroll-behavior: smooth;
+  min-height: 0; /* Important for flex containers to scroll properly */
+}
+/* Scrollbar Styling */
+#chat-window::-webkit-scrollbar {
+  width: 6px;
+}
+#chat-window::-webkit-scrollbar-track {
+  background: transparent;
+}
+#chat-window::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+}
+
+/* Messages Layout */
+.message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  opacity: 0;
+  animation: slideUp 0.3s forwards ease-out;
+}
+
+.message-row.ai {
+  justify-content: flex-start;
+}
+
+.message-row.user {
+  justify-content: flex-end;
+}
+
+/* Avatars in Chat */
+.chat-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* Bubble Styles */
+.bubble {
+  max-width: 80%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message-row.ai .bubble {
+  background: var(--message-ai-bg);
+  color: var(--message-ai-text);
+  border-top-left-radius: 4px;
+}
+
+.message-row.user .bubble {
+  background: var(--message-user-bg);
+  color: var(--message-user-text);
+  border-top-right-radius: 4px;
+}
+
+/* Markdown content */
+.bubble p {
+  margin-bottom: 0.5em;
+}
+.bubble p:last-child {
+  margin-bottom: 0;
+}
+.bubble strong {
+  font-weight: 600;
+}
+.bubble img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+/* Empty State */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.empty-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 32px;
+  max-width: 80%;
+}
+
+.suggestions-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.suggestion-pill {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  flex: 1 1 40%;
+  min-width: 140px;
+  max-width: 200px;
+}
+
+.suggestion-pill:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Input Area - Fixo na parte inferior */
+.input-wrapper {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 20px;
+  background: var(--bg-color);
+  z-index: 20;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.input-card {
+  background: var(--input-bg);
+  border-radius: 24px;
+  padding: 6px 6px 6px 16px;
+  box-shadow: 0 10px 30px -5px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-top {
+  display: flex;
+  align-items: center;
+}
+
+.chat-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 10px 0;
+  font-family: inherit;
+  color: var(--text-primary);
+  resize: none; /* Remove redimensionamento manual */
+  min-height: 24px;
+  max-height: 150px;
+  overflow-y: auto;
+  background: transparent;
+  line-height: 1.5;
+}
+
+/* Scrollbar customizada para o textarea */
+.chat-textarea::-webkit-scrollbar {
+  width: 4px;
+}
+.chat-textarea::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.input-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-right: 10px;
+  padding-bottom: 6px;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: bg 0.2s;
+}
+.icon-btn:hover {
+  background: #f3f4f6;
+}
+
+.disclaimer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.typing-indicator {
+  display: flex;
+  align-self: flex-start;
+  padding: 5px 12px;
+  margin-left: 42px;
+  margin-bottom: 10px;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #999;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+  display: inline-block;
+  margin: 0 2px;
+}
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* WhatsApp Floating Button (Botão Fixo) */
+.whatsapp-floating-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInFromBottom 0.5s ease-out;
+}
+
+.whatsapp-floating-button:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(37, 211, 102, 0.5);
+  background: linear-gradient(135deg, #128c7e 0%, #075e54 100%);
+}
+
+.whatsapp-floating-button:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.whatsapp-floating-text {
+  display: inline;
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsividade Mobile */
+@media (max-width: 768px) {
+  .whatsapp-cta-primary {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+
+  .whatsapp-cta-primary svg {
+    width: 16px !important;
+    height: 16px !important;
+    margin-right: 6px !important;
+  }
+
+  /* Switch de idioma mais compacto em mobile */
+  .language-switch {
+    padding: 3px;
+  }
+
+  .language-option {
+    padding: 4px 8px;
+  }
+
+  .language-flag {
+    font-size: 0.9rem;
+  }
+
+  .language-code {
+    font-size: 0.7rem;
+  }
+
+  /* Esconde o botão flutuante em mobile para não cobrir o textarea */
+  .whatsapp-floating-button {
+    display: none;
+  }
+
+  .contact-link {
+    min-width: auto;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* Mobile Contact Trigger */
+.mobile-contact-trigger {
+  display: none; /* Hidden by default (Desktop) */
+}
+
+.contact-dropdown-menu.drop-up {
+  top: auto;
+  bottom: 140%; /* Joga mais para cima para garantir que não corte */
+  right: 0;
+  transform-origin: bottom right;
+  animation: slideInUp 0.2s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Telas muito pequenas (Mobile) */
+@media (max-width: 480px) {
+  .header-content {
+    gap: 10px;
+  }
+
+  /* Hide header contact info on mobile */
+  .header-actions .contact-dropdown-container {
+    display: none;
+  }
+
+  /* Show input contact info on mobile */
+  .mobile-contact-trigger {
+    display: block;
+    margin-right: 8px; /* Espaço entre ícone e botão de enviar */
+  }
+
+  .header-title {
+    font-size: 0.95rem;
+  }
+
+  .whatsapp-cta-primary {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+}
+
+/* WhatsApp CTA Green (User Requested) */
+.cta-whatsapp-green {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background-color: #25d366;
+  color: #ffffff !important; /* Force white text */
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 8px;
+  margin-top: 16px;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2);
+}
+
+.cta-whatsapp-green:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(37, 211, 102, 0.3);
+  background-color: #20bd5a;
 }
