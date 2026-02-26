@@ -376,7 +376,7 @@ header {
 .main-container {
   flex: 1;
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -595,7 +595,7 @@ header {
 .main-container {
   flex: 1;
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -692,6 +692,57 @@ header {
   max-width: 100%;
   border-radius: 8px;
   margin-top: 8px;
+}
+.bubble ul,
+.bubble ol {
+  margin-left: 1.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+.bubble li {
+  margin-bottom: 0.25em;
+}
+.bubble pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 0.5em 0;
+}
+[data-theme="dark"] .bubble pre {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.bubble code {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+[data-theme="dark"] .bubble code {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.bubble pre code {
+  background-color: transparent;
+  padding: 0;
+}
+.bubble h1,
+.bubble h2,
+.bubble h3,
+.bubble h4 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+.bubble a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+}
+.bubble li p {
+  margin: 0;
+  display: inline;
 }
 
 /* Empty State */
